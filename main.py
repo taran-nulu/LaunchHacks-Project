@@ -17,21 +17,25 @@ player = 1
 winner = 0
 game_over = False
 
-green = (0, 255, 0)
-red = (255, 0, 0)
-blue = (0, 0, 255)
+transparent = (0, 0, 0, 0)
 
-font = pygame.font.SysFont(None, 40)
+black = (0, 0, 0)
+white = (255, 255, 255)
+
+p1 = ""
+p2 = ""
+
+font = pygame.font.SysFont("impact", 40)
 
 again_rect = Rect(screen_width // 2 - 80, screen_height // 2 + 10, 160, 50)
 
 def draw_grid():
-    bg = (255, 255, 200)
-    grid = (50, 50, 50)
+    bg = (255, 255, 255)
+    grid = (0, 0, 0)
     screen.fill(bg)
     for x in range(1, 3):
-        pygame.draw.line(screen, grid, (0, x * 100), (screen_width, x * 100), line_width)
-        pygame.draw.line(screen, grid, (x * 100, 0), (x * 100, screen_height), line_width)
+        pygame.draw.line(screen, black, (0, x * 100), (screen_width, x * 100), line_width)
+        pygame.draw.line(screen, black, (x * 100, 0), (x * 100, screen_height), line_width)
 
 for x in range(3):
     row = [0] * 3
@@ -43,10 +47,10 @@ def draw_markers():
         y_pos = 0
         for y in x:
             if y == 1: 
-                pygame.draw.line(screen, green, (x_pos * 100 + 15, y_pos * 100 + 15), (x_pos * 100 + 85, y_pos * 100 + 85), line_width)
-                pygame.draw.line(screen, green, (x_pos * 100 + 15, y_pos * 100 + 85), (x_pos * 100 + 85, y_pos * 100 + 15), line_width)
+                pygame.draw.line(screen, black, (x_pos * 100 + 15, y_pos * 100 + 15), (x_pos * 100 + 85, y_pos * 100 + 85), line_width)
+                pygame.draw.line(screen, black, (x_pos * 100 + 15, y_pos * 100 + 85), (x_pos * 100 + 85, y_pos * 100 + 15), line_width)
             if y == -1:
-                pygame.draw.circle(screen, red, (x_pos * 100 + 50, y_pos * 100 + 50), 38, line_width)
+                pygame.draw.circle(screen, black, (x_pos * 100 + 50, y_pos * 100 + 50), 38, line_width)
             y_pos += 1
         x_pos += 1
 
@@ -79,12 +83,12 @@ def check_winner():
 
 def draw_winner(winner):
     win_text = 'Player ' + str(winner) + " wins"
-    win_img = font.render(win_text, True, blue)
-    pygame.draw.rect(screen, green, (screen_width // 2 - 100, screen_height // 2 - 60, 200, 50))
+    win_img = font.render(win_text, True, black)
+    pygame.draw.rect(screen, white, (screen_width // 2 - 100, screen_height // 2 - 60, 200, 50))
     screen.blit(win_img, (screen_width // 2 - 100, screen_height // 2 - 50))
     again_text = "Play again?"
-    again_img = font.render(again_text, True, blue)
-    pygame.draw.rect(screen, green, again_rect)
+    again_img = font.render(again_text, True, black)
+    pygame.draw.rect(screen, white, again_rect)
     screen.blit(again_img, (screen_width // 2 - 80, screen_height // 2 + 10))
 
 
@@ -110,6 +114,59 @@ while run:
                     markers[cell_x // 100][cell_y // 100] = player
                     player *= -1
                     check_winner()
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_a:
+                p1 = "rock"
+            if event.key == pygame.K_s:
+                p1 = "paper"
+            if event.key == pygame.K_d:
+                p1 = "scissors"
+            if event.key == pygame.K_j:
+                p2 = "rock"
+            if event.key == pygame.K_k:
+                p2 = "paper"
+            if event.key == pygame.K_l:
+                p2 = "scissors"
+
+            # SET VARS TO FALSE AFTER DISPLAYING IMAGE
+            if p1 == "rock" and p2 == "rock":
+                print("rock tie")
+                p1 = ""
+                p2 = ""
+            if p1 == "paper" and p2 == "paper":
+                print("paper tie")
+                p1 = ""
+                p2 = ""
+            if p1 == "scissors" and p2 == "scissors":
+                print("scissors tie")
+                p1 = ""
+                p2 = ""
+            if p1 == "rock" and p2 == "scissors":
+                print("p1 rock win")
+                p1 = ""
+                p2 = ""
+            if p1 == "scissors"and p2 == "paper":
+                print("p1 scissors win")
+                p1 = ""
+                p2 = ""
+            if p1 == "paper" and p2 == "rock":
+                print("p1 paper win")
+                p1 = ""
+                p2 = ""
+            if p2 == "rock" and p1 == "scissors":
+                print("p2 rock win")
+                p1 = ""
+                p2 = ""
+            if p2 == "scissors" and p1 == "paper":
+                print("p2 scissors win")
+                p1 = ""
+                p2 = ""
+            if p2 == "paper" and p1 == "rock":
+                print("p2 paper win")
+                p1 = ""
+                p2 = ""
+
     if game_over == True:
         draw_winner(winner)
         if event.type == pygame.MOUSEBUTTONDOWN and clicked == False:
@@ -128,6 +185,7 @@ while run:
                 for x in range(3):
                     row = [0] * 3
                 markers.append(row)
+    
 
 
     pygame.display.update()
